@@ -12,9 +12,14 @@ top_states_df.rename(columns={"customer_id": "customer_count"}, inplace=True)
 st.header('E-Commerce Data Analysis Project')
 st.subheader("Top 5 States with Most E-Commerce Customers")
 
+sort_order = st.radio("Sort by 1:", ["Most to Least", "Least to Most"])
+
+ascending = sort_order == "Least to Most"
+sorted_df = top_states_df.sort_values(by="customer_count", ascending=ascending)
+
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.set_theme(style="darkgrid")
-sns.barplot(x=top_states_df["customer_state"], y=top_states_df["customer_count"], palette="Blues_r", ax=ax)
+sns.barplot(x=sorted_df["customer_state"], y=sorted_df["customer_count"], palette="Blues_r", ax=ax)
 
 ax.set_xlabel("State")
 ax.set_ylabel("Number of Customers")
@@ -23,13 +28,20 @@ st.pyplot(fig)
 
 st.subheader('Most sold products by categories in the 5 states with the most E-commerce customers')
 
+unique_categories = top_categories_df["product_category_name"].unique()
+palette_dict = dict(zip(unique_categories, sns.color_palette("viridis", len(unique_categories))))
+sort_order2 = st.radio("Sort by 2:", ["Most to Least", "Least to Most"])
+
+ascending2 = sort_order2 == "Least to Most"
+sorted_df2 = top_categories_df.sort_values(by="count", ascending=ascending2)
+
 fig2, ax2 = plt.subplots(figsize=(8, 5))
 sns.barplot(
-    y=top_categories_df["customer_state"], 
-    x=top_categories_df["count"], 
-    hue=top_categories_df["product_category_name"], 
+    y=sorted_df2["customer_state"], 
+    x=sorted_df2["count"], 
+    hue=sorted_df2["product_category_name"], 
     dodge=False, 
-    palette="viridis", 
+    palette=palette_dict, 
     ax=ax2
 )
 
